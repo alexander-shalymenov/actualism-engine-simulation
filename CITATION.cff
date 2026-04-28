@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Shalymenov"
+  given-names: "Alexander Vladimirovich"
+title: "Informational Actualism: Multiverse Engine"
+version: 1.0.0
+date-released: 2026-04-28
+url: "https://github.com/alexander-shalymenov/actualism-engine-simulation"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Shalymenov"
+    given-names: "Alexander Vladimirovich"
+  title: "Informational Actualism: Variational Principle of Factuality"
+  year: 2026
+  journal: "PhilPapers"
+  url: "https://philpapers.org/rec/ALEIAA-3"

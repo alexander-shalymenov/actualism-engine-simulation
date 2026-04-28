@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Informational Actualism: Multiverse Engine - Alexander Shalymenov</title>
+    <style>
+        body { background: #0b0e14; color: #adbac7; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; display: flex; }
+        #side-panel { width: 460px; background: #1c2128; border-right: 1px solid #444c56; padding: 35px; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; overflow-y: auto; }
+        
+        h1 { font-size: 26px; color: #58a6ff; margin: 0; line-height: 1.2; }
+        .author-name { font-size: 17px; color: #c9d1d9; margin-top: 10px; font-weight: bold; }
+        .subtitle { font-size: 13px; color: #768390; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 1px solid #30363d; padding-bottom: 20px; }
+        
+        .section { margin-bottom: 30px; background: #0d1117; padding: 25px; border-radius: 12px; border: 1px solid #30363d; position: relative; }
+        .label { color: #768390; font-size: 12px; text-transform: uppercase; font-weight: bold; display: block; margin-bottom: 12px; }
+        .formula-tag { color: #d2a8ff; font-family: 'Courier New', monospace; font-weight: bold; font-size: 17px; display: block; margin-bottom: 12px; line-height: 1.4; }
+        .desc { font-size: 14px; line-height: 1.7; color: #8b949e; margin: 15px 0; }
+        .value { color: #58a6ff; font-size: 32px; font-family: monospace; display: block; }
+        
+        .ref-link { color: #58a6ff; text-decoration: none; font-size: 13px; display: block; margin-top: 15px; font-weight: bold; border-left: 3px solid #58a6ff; padding-left: 10px; }
+        .ref-link:hover { color: #79c0ff; background: rgba(88, 166, 255, 0.1); }
+
+        button { background: #238636; border: none; color: white; padding: 18px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 17px; margin-top: 20px; transition: background 0.3s; }
+        button:hover { background: #2ea043; }
+        
+        canvas { flex-grow: 1; background: #05070a; }
+        
+        input[type=range] { width: 100%; accent-color: #58a6ff; margin-top: 10px; cursor: pointer; }
+        .control-row { display: flex; justify-content: space-between; font-size: 13px; color: #adbac7; margin-top: 15px; }
+        
+        .actualism-toggle { position: absolute; top: 25px; right: 25px; cursor: pointer; }
+        .actualism-toggle input { width: 22px; height: 22px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="side-panel">
+        <h1>Informational Actualism</h1>
+        <div class="author-name">Alexander Vladimirovich Shalymenov</div>
+        <div class="subtitle">Multiverse Variational Foundation</div>
+
+        <div class="section">
+            <label class="actualism-toggle">
+                <input type="checkbox" id="actualism-check" checked>
+            </label>
+            <span class="label" style="color:#ffca28">Principle of Actualization (A)</span>
+            <span class="formula-tag">ω = arg min (K(ω) - log p(ω))</span>
+            <div class="desc">
+                In the Shalymenov framework, this variational principle selects a fact from the multiverse. Each independent cluster follows its own foundation <b>G</b>, potentially possessing unique physical constants.
+            </div>
+            <div class="control-row">
+                <span>Independent World Seeds</span>
+                <span id="p-val">10%</span>
+            </div>
+            <input type="range" id="p-slider" min="1" max="100" value="10">
+            <span class="value" id="a-count" style="color:#ffca28; margin-top:15px;">0</span>
+            <a href="https://philpapers.org/rec/ALEIAA-3" class="ref-link" target="_blank">View Thesis on PhilPapers →</a>
+        </div>
+
+        <div class="section">
+            <span class="label">Stochastic Accretion (N)</span>
+            <span class="formula-tag">P(link) ∝ 1/N</span>
+            <div class="desc">
+                Van Hateren's base model. Represents the raw informational pool. Without the actualization filter, these potential states appear as non-structured, entropic red noise.
+            </div>
+            <span class="value" id="n-count">0</span>
+            <a href="https://philpapers.org/rec/VANFNT-3" class="ref-link" target="_blank">View van Hateren Basis →</a>
+        </div>
+
+        <div class="section">
+            <span class="label">Multiverse Environment</span>
+            <div class="control-row"><span>Expansion Speed</span></div>
+            <input type="range" id="speed" min="1" max="1000" value="250">
+            
+            <button id="start-btn">INITIALIZE REALITIES</button>
+            <button id="reset-btn" style="background:none; color:#f85149; font-size:12px; border: 1px solid #30363d; margin-top: 15px;">HARD RESET SYSTEM</button>
+        </div>
+    </div>
+    
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let N = 0, A = 0, running = false;
+        let clusters = [];
+
+        function resize() {
+            canvas.width = window.innerWidth - 460;
+            canvas.height = window.innerHeight;
+        }
+        window.onresize = resize;
+        resize();
+
+        document.getElementById('p-slider').oninput = function() {
+            document.getElementById('p-val').innerText = this.value + "%";
+        };
+
+        function addElement() {
+            const isActualismOn = document.getElementById('actualism-check').checked;
+            const pSeed = document.getElementById('p-slider').value / 100;
+            let x, y, isFact = false, color, clusterId;
+
+            if (isActualismOn) {
+                if (clusters.length > 0 && Math.random() > pSeed) {
+                    clusterId = Math.floor(Math.random() * clusters.length);
+                    let c = clusters[clusterId];
+                    let parent = c.nodes[Math.floor(Math.random() * c.nodes.length)];
+                    // Physical laws: different range for each world
+                    x = parent.x + (Math.random() - 0.5) * c.range;
+                    y = parent.y + (Math.random() - 0.5) * c.range;
+                    color = c.color;
+                    isFact = true;
+                } else {
+                    x = Math.random() * canvas.width;
+                    y = Math.random() * canvas.height;
+                    const hues = [205, 275, 45, 155, 335, 15, 195, 95];
+                    color = `hsla(${hues[Math.floor(Math.random()*hues.length)]}, 85%, 60%,`;
+                    clusterId = clusters.length;
+                    // Initializing a new world with unique local "physics"
+                    clusters.push({ 
+                        nodes: [], 
+                        color: color, 
+                        range: 40 + Math.random() * 160 
+                    });
+                    isFact = true;
+                }
+            } else {
+                x = Math.random() * canvas.width;
+                y = Math.random() * canvas.height;
+                ctx.fillStyle = 'rgba(248, 81, 73, 0.45)';
+                ctx.fillRect(x, y, 1.5, 1.5);
+                N++;
+                return;
+            }
+
+            if (isFact) {
+                let node = { x, y };
+                clusters[clusterId].nodes.push(node);
+                A++; N++;
+                let cNodes = clusters[clusterId].nodes;
+                if (cNodes.length > 1) {
+                    let target = cNodes[cNodes.length - 2];
+                    ctx.beginPath();
+                    ctx.strokeStyle = color + ' 0.4)';
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(node.x, node.y);
+                    ctx.lineTo(target.x, target.y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function draw() {
+            if (!running) return;
+            let flow = Math.ceil(document.getElementById('speed').value / 10);
+            for(let i=0; i<flow; i++) addElement();
+            document.getElementById('n-count').innerText = N.toLocaleString();
+            document.getElementById('a-count').innerText = A.toLocaleString();
+            requestAnimationFrame(draw);
+        }
+
+        document.getElementById('start-btn').onclick = () => {
+            running = !running;
+            document.getElementById('start-btn').innerText = running ? "PAUSE SIMULATION" : "INITIALIZE REALITIES";
+            if (running) draw();
+        };
+
+        document.getElementById('reset-btn').onclick = () => location.reload();
+    </script>
+</body>
+</html>
