@@ -1,3 +1,5 @@
+# [Run Live Simulation Here](https://alexander-shalymenov.github.io/actualism-engine-simulation/actualism-engine-simulation.html)
+
 # Informational Actualism: Multiverse Engine
 **Author:** Alexander Vladimirovich Shalymenov (2026)
 
