@@ -52,6 +52,9 @@
                 <span id="p-val">10%</span>
             </div>
             <input type="range" id="p-slider" min="1" max="100" value="10">
+            <div class="desc" style="font-style: italic; font-size: 12px; margin-top: 10px;">
+    At 100%, world seeds become fully independent. Without the linkage G, the principle of actualization has no data to select from. The result is a void of non-actualized potential.
+</div>
             <span class="value" id="a-count" style="color:#ffca28; margin-top:15px;">0</span>
             <a href="https://philpapers.org/rec/ALEIAA-3" class="ref-link" target="_blank">View Thesis on PhilPapers →</a>
         </div>
@@ -164,8 +167,17 @@
             document.getElementById('start-btn').innerText = running ? "PAUSE SIMULATION" : "INITIALIZE REALITIES";
             if (running) draw();
         };
-
-        document.getElementById('reset-btn').onclick = () => location.reload();
+document.getElementById('reset-btn').onclick = (e) => {
+    e.target.blur();
+    
+    const slider = document.getElementById('p-slider');
+    slider.value = 10;
+    
+    sessionStorage.clear();
+    localStorage.clear();
+    
+    location.reload();
+};
     </script>
 </body>
 </html>
