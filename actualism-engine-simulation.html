@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Informational Actualism: Multiverse Engine - Alexander Shalymenov </title>
+    <title>Informational Actualism: Multiverse Engine - Alexander Shalymenov</title>
     <style>
         body { background: #0b0e14; color: #adbac7; font-family: 'Segoe UI', sans-serif; margin: 0; overflow: hidden; display: flex; }
         #side-panel { width: 460px; background: #1c2128; border-right: 1px solid #444c56; padding: 35px; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column; overflow-y: auto; }
@@ -48,12 +48,12 @@
                 In the Shalymenov framework, this variational principle selects a fact from the multiverse. Each independent cluster follows its own foundation <b>G</b>, potentially possessing unique physical constants.
             </div>
             <div class="control-row">
-                <span>Independent World Seeds</span>
+                <span>Autonomous Branch Rate</span>
                 <span id="p-val">10%</span>
             </div>
             <input type="range" id="p-slider" min="1" max="100" value="10">
-            <div class="desc" style="font-style: italic; font-size: 12px; margin-top: 10px;">
-    At 100%, world seeds become fully independent. Without the linkage G, the principle of actualization has no data to select from. The result is a void of non-actualized potential.
+<div class="desc" style="font-style: italic; font-size: 12px; margin-top: 10px;">
+Controls how often a child separates from its parent cluster and becomes an autonomous branch. Each child still has an origin parent, but after separation its future growth develops independently.
 </div>
             <span class="value" id="a-count" style="color:#ffca28; margin-top:15px;">0</span>
             <a href="https://philpapers.org/rec/ALEIAA-3" class="ref-link" target="_blank">View Thesis on PhilPapers →</a>
@@ -63,7 +63,7 @@
             <span class="label">Stochastic Accretion (N)</span>
             <span class="formula-tag">P(link) ∝ 1/N</span>
             <div class="desc">
-                Van Hateren's base model. Represents the raw informational pool. Without the actualization filter, these potential states appear as non-structured, entropic red noise.
+Van Hateren's base model is represented here as stochastic linked growth. Elements still form connections, but without the actualization principle the structure remains visually noisy and lacks stable autonomous branches. Screen distance is only a visualization layout; in the model, links define structure, and geometric distance is not assumed in advance.
             </div>
             <span class="value" id="n-count">0</span>
             <a href="https://philpapers.org/rec/VANFNT-3" class="ref-link" target="_blank">View van Hateren Basis →</a>
@@ -103,35 +103,156 @@
             const pSeed = document.getElementById('p-slider').value / 100;
             let x, y, isFact = false, color, clusterId;
 
-            if (isActualismOn) {
-                if (clusters.length > 0 && Math.random() > pSeed) {
-                    clusterId = Math.floor(Math.random() * clusters.length);
-                    let c = clusters[clusterId];
-                    let parent = c.nodes[Math.floor(Math.random() * c.nodes.length)];
-                    // Physical laws: different range for each world
-                    x = parent.x + (Math.random() - 0.5) * c.range;
-                    y = parent.y + (Math.random() - 0.5) * c.range;
-                    color = c.color;
-                    isFact = true;
-                } else {
-                    x = Math.random() * canvas.width;
-                    y = Math.random() * canvas.height;
-                    const hues = [205, 275, 45, 155, 335, 15, 195, 95];
-                    color = `hsla(${hues[Math.floor(Math.random()*hues.length)]}, 85%, 60%,`;
-                    clusterId = clusters.length;
-                    // Initializing a new world with unique local "physics"
-                    clusters.push({ 
-                        nodes: [], 
-                        color: color, 
-                        range: 40 + Math.random() * 160 
-                    });
-                    isFact = true;
+if (isActualismOn) {
+    const hues = [205, 275, 45, 155, 335, 15, 195, 95];
+
+    if (clusters.length === 0) {
+        x = canvas.width / 2;
+        y = canvas.height / 2;
+
+        color = `hsla(${hues[Math.floor(Math.random() * hues.length)]}, 85%, 60%,`;
+        clusterId = clusters.length;
+
+        clusters.push({
+            nodes: [],
+            color: color,
+            range: 80,
+            parentCluster: null
+        });
+
+        isFact = true;
+    } else {
+        clusterId = Math.floor(Math.random() * clusters.length);
+        let parentCluster = clusters[clusterId];
+        let parent = parentCluster.nodes[Math.floor(Math.random() * parentCluster.nodes.length)];
+
+const becomesIndependent = Math.random() < pSeed;
+const angle = Math.random() * Math.PI * 2;
+
+const localDistance = 20 + Math.random() * parentCluster.range;
+const branchDistance = parentCluster.range + 80 + Math.random() * 220;
+
+const distance = becomesIndependent ? branchDistance : localDistance;
+
+x = parent.x + Math.cos(angle) * distance;
+y = parent.y + Math.sin(angle) * distance;
+
+        if (becomesIndependent) {
+            color = `hsla(${hues[Math.floor(Math.random() * hues.length)]}, 85%, 60%,`;
+            clusterId = clusters.length;
+
+            clusters.push({
+                nodes: [],
+                color: color,
+                range: 50 + Math.random() * 140,
+                parentCluster: parentCluster
+            });
+        } else {
+            color = parentCluster.color;
+        }
+
+        isFact = true;
+    }
+} else {
+                if (!window.stochasticNodes) {
+                    window.stochasticNodes = [];
                 }
-            } else {
-                x = Math.random() * canvas.width;
-                y = Math.random() * canvas.height;
-                ctx.fillStyle = 'rgba(248, 81, 73, 0.45)';
+
+                const tealPalette = [
+                    'rgba(45, 212, 191, 0.22)',
+                    'rgba(56, 189, 248, 0.22)',
+                    'rgba(14, 165, 233, 0.22)',
+                    'rgba(34, 197, 94, 0.22)',
+                    'rgba(6, 182, 212, 0.22)',
+                    'rgba(99, 102, 241, 0.22)'
+                ];
+
+                const nodePalette = [
+                    'rgba(45, 212, 191, 0.72)',
+                    'rgba(56, 189, 248, 0.72)',
+                    'rgba(14, 165, 233, 0.72)',
+                    'rgba(34, 197, 94, 0.72)',
+                    'rgba(6, 182, 212, 0.72)',
+                    'rgba(99, 102, 241, 0.72)'
+                ];
+
+                if (window.stochasticNodes.length === 0) {
+                    x = canvas.width / 2 - 20;
+                    y = canvas.height / 2;
+
+                    window.stochasticNodes.push({ x, y });
+
+                    ctx.fillStyle = nodePalette[0];
+                    ctx.fillRect(x, y, 1.5, 1.5);
+
+                    N++;
+                    return;
+                }
+
+                if (window.stochasticNodes.length === 1) {
+                    const parent = window.stochasticNodes[0];
+
+                    x = parent.x + 40;
+                    y = parent.y;
+
+                    ctx.beginPath();
+                    ctx.strokeStyle = tealPalette[0];
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(parent.x, parent.y);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+
+                    window.stochasticNodes.push({ x, y });
+
+                    ctx.fillStyle = nodePalette[0];
+                    ctx.fillRect(x, y, 1.5, 1.5);
+
+                    N++;
+                    return;
+                }
+
+                const parentCountRoll = Math.random();
+                let parentCount = 1;
+
+                if (parentCountRoll > 0.37 && parentCountRoll <= 0.74) {
+                    parentCount = 2;
+                } else if (parentCountRoll > 0.74 && parentCountRoll <= 0.92) {
+                    parentCount = 3;
+                }
+
+                parentCount = Math.min(parentCount, window.stochasticNodes.length);
+
+                const parents = [];
+
+                while (parents.length < parentCount) {
+                    const candidate = window.stochasticNodes[
+                        Math.floor(Math.random() * window.stochasticNodes.length)
+                    ];
+
+                    if (!parents.includes(candidate)) {
+                        parents.push(candidate);
+                    }
+                }
+
+x = Math.random() * canvas.width;
+y = Math.random() * canvas.height;
+
+                const colorIndex = Math.floor(Math.random() * tealPalette.length);
+
+                parents.forEach(parent => {
+                    ctx.beginPath();
+                    ctx.strokeStyle = tealPalette[colorIndex];
+                    ctx.lineWidth = 1;
+                    ctx.moveTo(parent.x, parent.y);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                });
+
+                window.stochasticNodes.push({ x, y });
+
+                ctx.fillStyle = nodePalette[colorIndex];
                 ctx.fillRect(x, y, 1.5, 1.5);
+
                 N++;
                 return;
             }
@@ -167,6 +288,10 @@
             document.getElementById('start-btn').innerText = running ? "PAUSE SIMULATION" : "INITIALIZE REALITIES";
             if (running) draw();
         };
+
+
+
+
 document.getElementById('reset-btn').onclick = (e) => {
     e.target.blur();
     
@@ -178,6 +303,9 @@ document.getElementById('reset-btn').onclick = (e) => {
     
     location.reload();
 };
+
+
+
     </script>
 </body>
 </html>
